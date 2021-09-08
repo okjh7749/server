@@ -1,3 +1,6 @@
 C:\Users\okjh7\source\repos\server\server\obj\Debug\server.njsprojAssemblyReference.cache
 C:\Users\okjh7\source\repos\server\server\obj\Debug\server.njsproj.CoreCompileInputs.cache
 C:\Users\okjh7\source\repos\server\server\bin\Microsoft.NodejsTools.WebRole.dll
+C:\Users\jjh\source\repos\petserver\server\server\obj\Debug\server.njsprojAssemblyReference.cache
+C:\Users\jjh\source\repos\petserver\server\server\obj\Debug\server.njsproj.CoreCompileInputs.cache
+C:\Users\jjh\source\repos\petserver\server\server\bin\Microsoft.NodejsTools.WebRole.dll

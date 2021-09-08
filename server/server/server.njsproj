@@ -31,9 +31,13 @@
     <Content Include="app.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="routers\iposting.js" />
+    <Content Include="routers\likes.js" />
+    <Content Include="routers\lookup.js" />
     <Content Include="routers\p1.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="routers\posting.js" />
     <Content Include="routers\user.js">
       <SubType>Code</SubType>
     </Content>
