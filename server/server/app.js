@@ -31,18 +31,24 @@ app.use(
         saveUninitialized: false,
     })
 );
+var p1 = require('./routers/p1')(app);
 
 var user = require('./routers/user')(app);
+
 var posting = require('./routers/posting')(app);
-var p1 = require('./routers/p1')(app);
 var iposting = require('./routers/iposting')(app);
 var lookup = require('./routers/lookup')(app);
 
+var lostdog = require('./routers/lostdog')(app);
+
+app.use('/p1', p1);
 app.use('/user', user);
 app.use('/posting', posting);
 app.use('/iposting', iposting);
 app.use('/lookup', lookup);
-app.use('/p1', p1);
+app.use('/lostdog', lostdog);
+
+
 
 
 var dir = './uploadedFiles';
