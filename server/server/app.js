@@ -41,12 +41,15 @@ var lookup = require('./routers/lookup')(app);
 
 var lostdog = require('./routers/lostdog')(app);
 
+var classr = require('./routers/classr')(app);
+
 app.use('/p1', p1);
 app.use('/user', user);
 app.use('/posting', posting);
 app.use('/iposting', iposting);
 app.use('/lookup', lookup);
 app.use('/lostdog', lostdog);
+app.use('/classr', classr);
 
 
 
