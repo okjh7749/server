@@ -3,7 +3,6 @@ module.exports = function (app) {
     var route = express.Router();
     var bodyParser = require('body-parser');
     var moment = require('moment');
-
     require('moment-timezone');
     moment.tz.setDefault("Asia/Seoul");
     var date = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -11,8 +10,6 @@ module.exports = function (app) {
     route.use(bodyParser.json());
     route.use(bodyParser.urlencoded({ extended: true }));
     var mysql = require('mysql2/promise');
-    var session = require('express-session')
-    var MySQLStore = require("express-mysql-session")(session);
     const pool = mysql.createPool({
         host: "ec2-3-36-182-213.ap-northeast-2.compute.amazonaws.com",
         user: "jh",
@@ -28,17 +25,8 @@ module.exports = function (app) {
         var resultCode = 200;
         var message = 'fail';
         const connection = await pool.getConnection(async conn => conn);
-        var sessionStore = new MySQLStore({} /* session store options */, connection);
-        app.use(
-            session({
-                key: "session_cookie_name",
-                secret: "session_cookie_secret",
-                store: sessionStore,
-                resave: false,
-                saveUninitialized: false,
-            })
-        ); 
         await connection.beginTransaction();
+        console.log(req.sessionID);
         console.log(req.body);
 
         var title = req.body.title;

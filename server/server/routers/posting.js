@@ -11,8 +11,6 @@ module.exports = function (app) {
     route.use(bodyParser.json());
     route.use(bodyParser.urlencoded({ extended: true }));
     var mysql = require('mysql2/promise');
-    var session = require('express-session')
-    var MySQLStore = require("express-mysql-session")(session);
     const pool = mysql.createPool({
         host: "ec2-3-36-182-213.ap-northeast-2.compute.amazonaws.com",
         user: "jh",
@@ -21,25 +19,14 @@ module.exports = function (app) {
         port: 3306
     });
 
-
     route.post('/addpost', async (req, res) => {
         const connection = await pool.getConnection(async conn => conn);
-        var sessionStore = new MySQLStore({} /* session store options */, connection);
-        app.use(
-            session({
-                key: "session_cookie_name",
-                secret: "session_cookie_secret",
-                store: sessionStore,
-                resave: false,
-                saveUninitialized: false,
-            })
-        );
-        await connection.beginTransaction();
+        //await connection.beginTransaction();
         console.log(req.body);
         var matches = [];
         var i = 0;
         var title = req.body.title;
-        var writer = "tset1"//session.getAttribute("userID");
+        var writer = req.body.writer;
         var content = req.body.content;
         var write_date = date;
         var tags = req.body.content;
@@ -55,7 +42,6 @@ module.exports = function (app) {
         });
 
         try {
-            console.log("start");
             //게시글 등록
             var sql = 'INSERT INTO Post (title, content,writer,write_date) VALUES (?, ?, ?, ?)';
             var params = [title, content, writer, write_date];
@@ -66,7 +52,6 @@ module.exports = function (app) {
                 message = 'write fail';
                 console.log(message);
             }
-            console.log("get postno");
             //추가된 게시글 고유번호 획득
             var sql1 = 'SELECT LAST_INSERT_ID() as lid';
             let result1 = await connection.execute(sql1);
@@ -78,14 +63,13 @@ module.exports = function (app) {
             }
             else {
                 postno = result1[0][0].lid;
+                console.log(postno);
             }
             //테그의 갯수만큼 반복
-            console.log("start tagmatch");
             var size = matches.length;
             for (var i = 0; i < size; i++) {
                 //현재 진행중인 테그가 존재하는지 확인
                 var tag = matches[i];
-                console.log(tag);
                 var sql2 = 'SELECT COUNT(*) as cnt FROM Tag WHERE tag_name = ?';
                 var params2 = [tag];
                 let result2 = await connection.execute(sql2, params2);
@@ -132,7 +116,6 @@ module.exports = function (app) {
                         console.log(message);
                     }
                     else {
-                        console.log(result5);
                         tagno = result5[0][0].tagno;
                     }
                 }
@@ -150,7 +133,6 @@ module.exports = function (app) {
                 else {
                     resultCode = 200;
                     message = 'write complate';
-                    console.log(message);
                 }
             }
         } catch (err) {
@@ -162,7 +144,7 @@ module.exports = function (app) {
             throw err;
 
         } finally {
-            connection.release();
+            
         }
         res.json({
             'code': resultCode,

@@ -1,13 +1,7 @@
 module.exports = function (app) {
     var express = require('express');
     var route = express.Router();
-
-    var bodyParser = require('body-parser');
-    route.use(bodyParser.json());
-    route.use(bodyParser.urlencoded({ extended: true }));
     var mysql = require('mysql');
-    var session = require('express-session')
-    var MySQLStore = require("express-mysql-session")(session);
     var connection = mysql.createConnection({
         host: "ec2-3-36-182-213.ap-northeast-2.compute.amazonaws.com",
         user: "jh",
@@ -15,22 +9,13 @@ module.exports = function (app) {
         password: "ckddlfwnd3349!",
         port: 3306
     });
-    var sessionStore = new MySQLStore({} /* session store options */, connection);
-    app.use(
-        session({
-            key: "session_cookie_name",
-            secret: "session_cookie_secret",
-            store: sessionStore,
-            resave: false,
-            saveUninitialized: false,
-        })
-    );
+  
    
     route.post('/join', function (req, res) {
-        console.log(req.body);
-        var userID = req.body.userID;
-        var userPWD = req.body.userPWD;
-        var userPWD2 = req.body.userPWD2;
+        var userID = req.body.UserID;
+        var userPWD = req.body.UserPWD;
+        var userPWD2 = req.body.UserPWD2;
+        
         // 삽입을 수행하는 sql문.
         var sql = 'INSERT INTO Users (UserID, UserPWD) VALUES (?, ?)';
         var params = [userID, userPWD];
@@ -46,7 +31,6 @@ module.exports = function (app) {
                     resultCode = 200;
                     message = 'join complate.';
                 }
-
                 res.json({
                     'code': resultCode,
                     'message': message
@@ -56,8 +40,8 @@ module.exports = function (app) {
     });
 
     route.post('/login', function (req, res) {
-        var userID = req.body.userID;
-        var userPWD = req.body.userPWD;
+        var userID = req.body.UserID;
+        var userPWD = req.body.UserPWD;
         var sql = 'select * from Users where UserID = ?';
         connection.query(sql, userID, function (err, result) {
             var resultCode = 404;
@@ -79,6 +63,7 @@ module.exports = function (app) {
                     req.session.save(function () {
                         
                     });
+
                 }
             }
 
@@ -86,6 +71,7 @@ module.exports = function (app) {
                 'code': resultCode,
                 'message': message
             });
+            console.log(resultCode);
         })
     });
     return route;

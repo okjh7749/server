@@ -25,8 +25,6 @@ module.exports = function (app) {
     route.use(bodyParser.json());
     route.use(bodyParser.urlencoded({ extended: true }));
     var mysql = require('mysql2/promise');
-    var session = require('express-session')
-    var MySQLStore = require("express-mysql-session")(session);
     const pool = mysql.createPool({
         host: "ec2-3-36-182-213.ap-northeast-2.compute.amazonaws.com",
         user: "jh",
@@ -39,17 +37,8 @@ module.exports = function (app) {
     route.post('/addipost', upload.single("image"), async (req, res) => {
         //res.render('confirmation', { file: null, files: req.files });
         const connection = await pool.getConnection(async conn => conn);
-        var sessionStore = new MySQLStore({} /* session store options */, connection);
-        app.use(
-            session({
-                key: "session_cookie_name",
-                secret: "session_cookie_secret",
-                store: sessionStore,
-                resave: false,
-                saveUninitialized: false,
-            })
-        );
         await connection.beginTransaction();
+        console.log(req.sessionID);
         console.log(req.body);
         var matches = [];
         var i = 0;
@@ -73,7 +62,6 @@ module.exports = function (app) {
         });
         try {
             
-            console.log("start");
             //게시글 등록
             var sql = 'INSERT INTO iPost (title, content,writer,write_date,img) VALUES (?, ?, ?, ?, ?)';
             var params = [title, content, writer, write_date,img];
